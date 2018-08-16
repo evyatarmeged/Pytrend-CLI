@@ -60,20 +60,20 @@ def get_programming_language(repo_info):
         return
 
 
-def stars_and_pull_requests(repo_info):
-    """Return total stars and pull requests"""
+def stars_and_forks(repo_info):
+    """Return total stars and forks"""
     try:
         data = repo_info.select('a.muted-link')
-        # Handle no stars/pull requests data on repo
+        # Handle no stars/forks data on repo
         try:
             stars = data[0].text.strip()
         except IndexError:
             stars = None
         try:
-            pull_requests = data[1].text.strip()
+            forks = data[1].text.strip()
         except IndexError:
-            pull_requests = None
-        return stars, pull_requests
+            forks = None
+        return stars, forks
     except AttributeError:
         return
 
@@ -96,7 +96,7 @@ def parse_repositories_info(tag):
         repositories = content.find_all('li')
         for index, list_item in enumerate(repositories, start=1):
             username, repo_name = username_and_reponame(list_item)
-            stars, pull_requests = stars_and_pull_requests(list_item)
+            stars, forks = stars_and_forks(list_item)
             trending[index] = {
                 'User': username,
                 'Repository': repo_name,
@@ -104,7 +104,7 @@ def parse_repositories_info(tag):
                 'Description': get_description(list_item),
                 'Programming Language': get_programming_language(list_item),
                 'Total stars': stars,
-                'Pull requests': pull_requests,
+                'Forks': forks,
                 'Stars trending': get_stars_trending(list_item)
             }
     return trending
